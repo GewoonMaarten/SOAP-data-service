@@ -1,0 +1,23 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>ws-producer</display-name>
+  <!--<listener>-->
+    <!--<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>-->
+  <!--</listener>-->
+  <!--<servlet>-->
+    <!--<description>JAX-WS endpoint</description>-->
+    <!--<display-name>WSServlet</display-name>-->
+    <!--<servlet-name>WSServlet</servlet-name>-->
+    <!--<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>-->
+  <!--</servlet>-->
+  <!--<servlet-mapping>-->
+    <!--<servlet-name>WSServlet</servlet-name>-->
+    <!--<url-pattern>/soap/*</url-pattern>-->
+  <!--</servlet-mapping>-->
+  <!--<welcome-file-list>-->
+    <!--<welcome-file>index.html</welcome-file>-->
+  <!--</welcome-file-list>-->
+</web-app>
