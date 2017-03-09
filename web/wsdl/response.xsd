@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://nl.hu.fnt/dataservice/response"
+           targetNamespace="http://nl.hu.fnt/dataservice/response">
+
+
+    <xs:annotation>
+        <xs:appinfo>Data service</xs:appinfo>
+        <xs:documentation xml:lang="en">
+            This schema defines the response for the data service.
+            You get a token (the token you gave in a request or a
+            new token if you didn't specify one). Next you get a
+            message. This message can differ based on whether you
+            make a post or get request. Next you get the data when
+            you make a get request.
+        </xs:documentation>
+    </xs:annotation>
+
+
+    <xs:simpleType name="Token">
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+
+    <xs:complexType name="Message">
+        <xs:sequence>
+            <xs:element name="message" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="data" type="xs:anyType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Response">
+        <xs:sequence>
+            <xs:element name="token" type="tns:Token"  minOccurs="1" maxOccurs="1"/>
+            <xs:element name="message" type="tns:Message" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="response" type="tns:Response" />
+
+</xs:schema>
