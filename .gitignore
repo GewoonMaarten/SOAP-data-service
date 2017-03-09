@@ -3,3 +3,4 @@
 *.iml
 out
 target
+/src/main/java/nl/hu/fnt/maarten/wsInterface/

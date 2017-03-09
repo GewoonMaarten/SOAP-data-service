@@ -39,7 +39,8 @@
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>jaxws-rt</artifactId>
-            <version>${jaxws.version}</version>
+            <version>2.2.8</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -70,7 +71,7 @@
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <wsdlDirectory>${basedir}/web/wsdl</wsdlDirectory>
+                            <wsdlDirectory>${basedir}/src/main/webapp/wsdl</wsdlDirectory>
                             <wsdlFiles>
                                 <wsdlFile>dataService.wsdl</wsdlFile>
                             </wsdlFiles>
