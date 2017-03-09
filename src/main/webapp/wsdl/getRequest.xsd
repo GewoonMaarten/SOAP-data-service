@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://nl.hu.fnt/dataservice/getRequest"
+           targetNamespace="http://nl.hu.fnt/dataservice/getRequest">
+
+    <xs:annotation>
+        <xs:appinfo>Data service</xs:appinfo>
+        <xs:documentation xml:lang="en">
+            This schema defines the get request for the data service.
+            You have to specify a token, this is your unique identifier
+            (if you don't have one you can get one when you make your
+            first post request). With this request you will get all the
+            data associated with your token.
+        </xs:documentation>
+    </xs:annotation>
+
+
+    <xs:complexType name="GetRequest">
+        <xs:sequence>
+            <xs:element name="token" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="getRequest" type="tns:GetRequest" />
+</xs:schema>
