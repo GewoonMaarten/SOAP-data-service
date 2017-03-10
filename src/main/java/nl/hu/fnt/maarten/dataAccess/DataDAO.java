@@ -1,10 +1,7 @@
 package nl.hu.fnt.maarten.dataAccess;
 
-import nl.hu.fnt.maarten.domain.Data;
-import nl.hu.fnt.maarten.domain.User;
-
-import java.sql.*;
-import java.util.ArrayList;
+import com.mongodb.*;
+import java.util.List;
 
 public class DataDAO {
     private static DataDAO instance = null;
@@ -17,30 +14,30 @@ public class DataDAO {
         }
         return instance;
     }
-    public ArrayList<Data> getDataByUser(User user){
-        ArrayList<Data> datas = new ArrayList<>();
 
-        Connection connection = DatabaseConnection.getInstance().getConnection();
-        Statement statement;
-        try{
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM 'Data' WHERE userId = "+user.getUserId());
-            while (resultSet.next()){
-                Blob value = resultSet.getBlob("value");
-                int dataId = resultSet.getInt("dataId");
-                Data data = new Data(dataId,value,user);
-                datas.add(data);
+    public void insertData(String token, List data){
+        DB database = DatabaseConnection.getInstance().getDatabase();
+        DBCollection collection = database.getCollection("users");
+
+        if(getDataByToken(token).one() == null){
+            BasicDBObject userData = new BasicDBObject("_id", token);
+            userData.append("data", data);
+            collection.insert(userData);
+        } else {
+            for (Object object : data){
+                DBObject userData = new BasicDBObject().append("$push", new  BasicDBObject("data", object));
+                DBObject query = new BasicDBObject().append("_id", token);
+                collection.update(query, userData);
             }
-            resultSet.close();
-            statement.close();
-            connection.close();
-        } catch (SQLException e){
-            e.printStackTrace();
         }
-        return datas;
-    }
-
-    public void insetDataByUser(Data data, User user){
 
     }
+
+    public DBCursor getDataByToken(String token){
+        DB database = DatabaseConnection.getInstance().getDatabase();
+        DBCollection collection = database.getCollection("users");
+        DBObject query = new BasicDBObject().append("_id", token);
+        return collection.find(query);
+    }
+
 }

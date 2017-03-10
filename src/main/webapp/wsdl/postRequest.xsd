@@ -19,7 +19,7 @@
     <xs:complexType name="PostRequest">
         <xs:sequence>
             <xs:element name="token" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="data" type="xs:anyType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="data" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

@@ -24,7 +24,7 @@
     <xs:complexType name="Message">
         <xs:sequence>
             <xs:element name="message" type="xs:string" minOccurs="1" maxOccurs="1" />
-            <xs:element name="data" type="xs:anyType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="data" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 

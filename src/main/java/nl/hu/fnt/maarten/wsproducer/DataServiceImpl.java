@@ -1,7 +1,7 @@
 package nl.hu.fnt.maarten.wsproducer;
 
+import com.mongodb.DBCursor;
 import nl.hu.fnt.maarten.dataAccess.DataDAO;
-import nl.hu.fnt.maarten.dataAccess.UserDAO;
 import nl.hu.fnt.maarten.domain.Data;
 import nl.hu.fnt.maarten.domain.User;
 import nl.hu.fnt.maarten.wsInterface.*;
@@ -22,27 +22,13 @@ public class DataServiceImpl implements DataServiceInterface {
         Response response = factory.createResponse();
         Message message = factory.createMessage();
 
-        UserDAO userDAO = UserDAO.getInstance();
         DataDAO dataDAO = DataDAO.getInstance();
 
         try {
 
-            User user = null;
-            String token;
+            String token = (postRequest.getToken() == null) ? tokenGenerator() : postRequest.getToken();
 
-            if (postRequest.getToken() == null){;
-                token = tokenGenerator();
-                user = new User(token);
-                userDAO.insertUser(user);
-            } else {
-                token = postRequest.getToken();
-                userDAO.getUserByToken(token);
-            }
-
-            List<Object> datas = postRequest.getData();
-            for (Object obj : datas){
-                dataDAO.insetDataByUser(new Data(obj, user), user);
-            }
+            dataDAO.insertData(token, postRequest.getData());
 
             message.setMessage("Succefully added data to Database.");
 
@@ -68,23 +54,22 @@ public class DataServiceImpl implements DataServiceInterface {
         Response response = factory.createResponse();
         Message message = factory.createMessage();
 
-        UserDAO userDAO = UserDAO.getInstance();
         DataDAO dataDAO = DataDAO.getInstance();
 
         try {
-            String token = getRequest.getToken();
-            User user = userDAO.getUserByToken(token);
+            DBCursor cursor = dataDAO.getDataByToken(getRequest.getToken());
 
-            ArrayList<Data> datas = dataDAO.getDataByUser(user);
 
-            message.setMessage("Got the following data");
 
-            for (Data data : datas){
-                message.getData().add(data.getValue());
+            while(cursor.hasNext()){
+                List list = (List)cursor.next().get("data");
+                for (Object object : list){
+                    message.getData().add((String)object);
+                }
             }
-
+            message.setMessage("Got following data: ");
             response.setMessage(message);
-            response.setToken(token);
+            response.setToken(getRequest.getToken());
 
         } catch (RuntimeException e){
             DataFault dataFault = factory.createDataFault();

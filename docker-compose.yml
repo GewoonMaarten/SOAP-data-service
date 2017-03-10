@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  db:
+    container_name: soapdataservice_db_1
+    image: mongo:3.2
+    ports:
+    - "27017:27017"
