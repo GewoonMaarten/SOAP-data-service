@@ -11,34 +11,25 @@ import java.util.List;
 
 @WebService( endpointInterface = "nl.hu.fnt.maarten.wsInterface.DataServiceInterface")
 public class DataServiceImpl implements DataServiceInterface {
+    private ObjectFactory factory = new ObjectFactory();
+    private Response response = factory.createResponse();
+    private Message message = factory.createMessage();
+    private DataDAO dataDAO = DataDAO.getInstance();
 
     @Override()
     public Response postData(PostRequest postRequest) throws Fault {
 
-        ObjectFactory factory = new ObjectFactory();
-        Response response = factory.createResponse();
-        Message message = factory.createMessage();
-
-        DataDAO dataDAO = DataDAO.getInstance();
-
         try {
-
             String token = (postRequest.getToken() == null) ? tokenGenerator() : postRequest.getToken();
 
             dataDAO.insertData(token, postRequest.getData());
 
             message.setMessage("Succefully added data to Database.");
-
+            message.getData().clear();
             response.setMessage(message);
             response.setToken(token);
         } catch (RuntimeException  e){
-            e.printStackTrace();
-            DataFault dataFault = factory.createDataFault();
-
-            dataFault.setErrorCode((short)1);
-            dataFault.setMessage("Could not insert data into database!");
-
-            throw new Fault("Oops, something went wrong :(" , dataFault);
+            throwFault((short)1,"Could not insert data into database!");
         }
 
         return response;
@@ -47,17 +38,16 @@ public class DataServiceImpl implements DataServiceInterface {
     @Override()
     public Response getData(GetRequest getRequest) throws Fault {
 
-        ObjectFactory factory = new ObjectFactory();
-        Response response = factory.createResponse();
-        Message message = factory.createMessage();
-
-        DataDAO dataDAO = DataDAO.getInstance();
-
         try {
             DBCursor cursor = dataDAO.getDataByToken(getRequest.getToken());
 
+            if (!cursor.hasNext()){
+                throwFault((short) 3, "No data found with this token!");
+            }
+
             while(cursor.hasNext()){
                 List list = (List)cursor.next().get("data");
+
                 for (Object object : list){
                     message.getData().add((String)object);
                 }
@@ -67,12 +57,7 @@ public class DataServiceImpl implements DataServiceInterface {
             response.setToken(getRequest.getToken());
 
         } catch (RuntimeException e){
-            DataFault dataFault = factory.createDataFault();
-
-            dataFault.setErrorCode((short)2);
-            dataFault.setMessage("Could not get data from database!");
-
-            throw new Fault("Oops, something went wrong :(" , dataFault);
+            throwFault((short)2, "Could not get data from database!");
         }
         return response;
     }
@@ -80,6 +65,15 @@ public class DataServiceImpl implements DataServiceInterface {
     private String tokenGenerator(){
         SecureRandom random = new SecureRandom();
         return new BigInteger(130, random).toString(32);
+    }
+
+    private void throwFault(short errorcode, String message) throws Fault{
+        DataFault dataFault = factory.createDataFault();
+
+        dataFault.setErrorCode(errorcode);
+        dataFault.setMessage(message);
+
+        throw new Fault("Oops, something went wrong :(" , dataFault);
     }
 
 }
