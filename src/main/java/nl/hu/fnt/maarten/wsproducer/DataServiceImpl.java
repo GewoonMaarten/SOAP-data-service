@@ -2,14 +2,11 @@ package nl.hu.fnt.maarten.wsproducer;
 
 import com.mongodb.DBCursor;
 import nl.hu.fnt.maarten.dataAccess.DataDAO;
-import nl.hu.fnt.maarten.domain.Data;
-import nl.hu.fnt.maarten.domain.User;
 import nl.hu.fnt.maarten.wsInterface.*;
 
 import javax.jws.WebService;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebService( endpointInterface = "nl.hu.fnt.maarten.wsInterface.DataServiceInterface")
@@ -58,8 +55,6 @@ public class DataServiceImpl implements DataServiceInterface {
 
         try {
             DBCursor cursor = dataDAO.getDataByToken(getRequest.getToken());
-
-
 
             while(cursor.hasNext()){
                 List list = (List)cursor.next().get("data");
